@@ -17,6 +17,7 @@ class LatestStamps:
     TAGGED_TIMESTAMP = 'tagged-timestamp'
     IGTV_TIMESTAMP = 'igtv-timestamp'
     STORY_TIMESTAMP = 'story-timestamp'
+    SCRAPED_TIMESTAMP = 'scraped-timestamp'
     ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 
     def __init__(self, latest_stamps_file):
@@ -90,6 +91,14 @@ class LatestStamps:
     def set_last_igtv_timestamp(self, profile_name: str, timestamp: datetime):
         """Sets timestamp of last download of a profile's igtv posts."""
         self._set_timestamp(profile_name, self.IGTV_TIMESTAMP, timestamp)
+
+    def get_last_scraped_timestamp(self, profile_name: str) -> datetime:
+        """Returns timestamp of last download of a profile's igtv posts."""
+        return self._get_timestamp(profile_name, self.SCRAPED_TIMESTAMP)
+
+    def set_last_scraped_timestamp(self, profile_name: str, timestamp: datetime):
+        """Sets timestamp of last download of a profile's igtv posts."""
+        self._set_timestamp(profile_name, self.SCRAPED_TIMESTAMP, timestamp)
 
     def get_last_story_timestamp(self, profile_name: str) -> datetime:
         """Returns timestamp of last download of a profile's stories."""

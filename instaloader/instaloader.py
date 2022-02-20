@@ -8,7 +8,7 @@ import string
 import sys
 import tempfile
 from contextlib import contextmanager, suppress
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from functools import wraps
 from io import BytesIO
 from pathlib import Path
@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 
 import requests
 import urllib3  # type: ignore
+import pytz
 
 from .exceptions import *
 from .instaloadercontext import InstaloaderContext, RateController
@@ -1372,14 +1373,26 @@ class Instaloader:
         def _error_raiser(_str):
             yield
 
-        # error_handler type is Callable[[Optional[str]], ContextManager[None]] (not supported with Python 3.5.0..3.5.3)
+
+    # error_handler type is Callable[[Optional[str]], ContextManager[None]] (not supported with Python 3.5.0..3.5.3)
         error_handler = _error_raiser if raise_errors else self.context.error_catcher
 
         for i, profile in enumerate(profiles, start=1):
-            self.context.log("[{0:{w}d}/{1:{w}d}] Downloading profile {2}".format(i, len(profiles), profile.username,
-                                                                                  w=len(str(len(profiles)))))
+            self.context.log("[{0:{w}d}/{1:{w}d}] Downloading profile {2}".format(i, len(profiles), profile.username, w=len(str(len(profiles)))))
+
             with error_handler(profile.username):  # type: ignore # (ignore type for Python 3.5 support)
                 profile_name = profile.username
+
+                # Todo: option to specify max-age
+                min_date = datetime.now(pytz.utc) - timedelta(days=7)
+                last_scraped = latest_stamps.get_last_scraped_timestamp(profile_name)
+                # self.context.log(min_date)
+                # self.context.log(last_scraped)
+                # self.context.log(profile_name)
+
+                if last_scraped is not None and last_scraped > min_date:
+                    self.context.log("Already scraped recently, skipping..")
+                    continue
 
                 # Download profile picture
                 if profile_pic:
@@ -1435,6 +1448,8 @@ class Instaloader:
                     if latest_stamps is not None and posts_to_download.first_item is not None:
                         latest_stamps.set_last_post_timestamp(profile_name,
                                                               posts_to_download.first_item.date_local.astimezone())
+
+                latest_stamps.set_last_scraped_timestamp(profile_name, datetime.now(pytz.utc))
 
         if stories and profiles:
             with self.context.error_catcher("Download stories"):
