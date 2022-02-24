@@ -148,6 +148,7 @@ class _PostPathFormatter(_ArbitraryItemFormatter):
         """Replaces '/' with similar looking Division Slash and some other illegal filename characters on Windows."""
         ret = ret.replace('/', '\u2215')
         ret = ret.replace('🫐', '{blueberry}')
+        ret = ret.replace('🪴', '{potted-plant}')
         if platform.system() == 'Windows':
             ret = ret.replace(':', '\uff1a').replace('<', '\ufe64').replace('>', '\ufe65').replace('\"', '\uff02')
             ret = ret.replace('\\', '\ufe68').replace('|', '\uff5c').replace('?', '\ufe16').replace('*', '\uff0a')
