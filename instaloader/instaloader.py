@@ -150,6 +150,7 @@ class _PostPathFormatter(_ArbitraryItemFormatter):
         ret = ret.replace('🫐', '{blueberry}')
         ret = ret.replace('🪴', '{potted-plant}')
         ret = ret.replace('🥸', '{disguised-face}')
+        ret = ret.replace('🫒', '{olive}')
         if platform.system() == 'Windows':
             ret = ret.replace(':', '\uff1a').replace('<', '\ufe64').replace('>', '\ufe65').replace('\"', '\uff02')
             ret = ret.replace('\\', '\ufe68').replace('|', '\uff5c').replace('?', '\ufe16').replace('*', '\uff0a')
