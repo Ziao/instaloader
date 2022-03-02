@@ -1387,7 +1387,7 @@ class Instaloader:
                 profile_name = profile.username
 
                 # Todo: option to specify max-age
-                min_date = datetime.now(pytz.utc) - timedelta(days=21)
+                min_date = datetime.now(pytz.utc) - timedelta(days=100)
                 last_scraped = latest_stamps.get_last_scraped_timestamp(profile_name)
                 # self.context.log(min_date)
                 # self.context.log(last_scraped)
